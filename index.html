@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>德州扑克 - 联机对战版</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <div id="connection-status">
+        <span id="status-indicator" class="status-offline">●</span>
+        <span id="status-text">离线</span>
+        <span id="room-id-display">
+            房间ID: <span id="current-room-id">无</span>
+        </span>
+        <input type="text" id="player-name-input" placeholder="输入你的名字" value="玩家">
+    </div>
+
+    <div id="game-container">
+        <header>
+            <h1>♠️♥️ 德州扑克 - 联机对战 ♣️♦️</h1>
+        </header>
+
+        <!-- 联机控制面板 (游戏开始前显示) -->
+        <section id="multiplayer-controls">
+            <h3>联机大厅</h3>
+            <div class="multiplayer-buttons">
+                <button onclick="createRoom()" class="btn-create">创建房间 (当房主)</button>
+                <div class="join-section">
+                    <input type="text" id="room-id-input" placeholder="输入好友的房间ID">
+                    <button onclick="joinRoom()" class="btn-join">加入房间</button>
+                </div>
+                <button onclick="copyRoomLink()" class="btn-copy" id="copy-btn" disabled>复制邀请链接</button>
+                <button onclick="disconnect()" class="btn-disconnect">断开连接</button>
+            </div>
+            <div id="connected-players">
+                <h4>已连接玩家 (<span id="players-count">0</span>)</h4>
+                <div id="players-list">
+                    <!-- 玩家列表会动态显示在这里 -->
+                </div>
+            </div>
+            <button onclick="startGame()" class="btn-start" id="start-game-btn" disabled>开始游戏 (仅房主)</button>
+        </section>
+
+        <!-- 游戏内容区 (游戏开始后显示) -->
+        <main id="game-content" style="display: none;">
+            <!-- 公共牌区 -->
+            <section id="community-cards-section">
+                <h3>公共牌</h3>
+                <div class="cards-container" id="community-cards">
+                    <div class="card-placeholder">等待发牌</div>
+                </div>
+            </section>
+
+            <!-- 玩家区域 (会动态生成) -->
+            <section id="players-section"></section>
+
+            <!-- 游戏控制区 -->
+            <section id="control-section">
+                <div id="action-log">
+                    <h4>游戏日志</h4>
+                    <div id="log-content"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 下注模态框 -->
+    <div id="betting-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>你的回合</h2>
+            <p>需要跟注: <span id="call-amount">0</span> | 你的筹码: <span id="player-chip-count">1000</span></p>
+            <div class="action-buttons">
+                <button onclick="sendPlayerAction('fold')" class="btn-fold">弃牌</button>
+                <button onclick="sendPlayerAction('check')" id="check-btn">过牌</button>
+                <button onclick="sendPlayerAction('call')" id="call-btn">跟注</button>
+                <button onclick="sendPlayerAction('raise')" class="btn-raise">加注</button>
+            </div>
+            <button onclick="closeBettingModal()">取消</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="multiplayer.js"></script>
+</body>
+</html>
